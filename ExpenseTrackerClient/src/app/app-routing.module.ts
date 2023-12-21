@@ -21,12 +21,7 @@ const routes: Routes = [
           import('./pages/ui-components/ui-components.module').then(
             (m) => m.UicomponentsModule
           ),
-      },
-      {
-        path: 'extra',
-        loadChildren: () =>
-          import('./pages/extra/extra.module').then((m) => m.ExtraModule),
-      },
+      },      
       {
         path: 'myAccount',
         loadChildren: () =>

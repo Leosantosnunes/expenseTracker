@@ -3,6 +3,7 @@ import { AppDashboardComponent } from './dashboard/dashboard.component';
 import { BudgetComponent } from './budget/budget.component';
 import { IncomeComponent } from './income/income.component';
 import moment from 'moment';
+import { AddTransactionsComponent } from './add-transactions/add-transactions.component';
 
 export const PagesRoutes: Routes = [
   {
@@ -30,6 +31,10 @@ export const PagesRoutes: Routes = [
     path: 'income',
     component: IncomeComponent,
   },
+  {
+    path: 'sample-page',
+    component: AddTransactionsComponent,
+  }
 ];
 
 function getCurrentMonthKey() {

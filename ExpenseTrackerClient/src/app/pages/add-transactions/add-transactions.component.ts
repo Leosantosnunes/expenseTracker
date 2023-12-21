@@ -8,10 +8,10 @@ import { CategoryGroup } from 'src/app/models/category-groups';
 
 @Component({
   selector: 'app-sample-page',
-  templateUrl: './sample-page.component.html',
-  styleUrls: ['./sample-page.component.css'],
+  templateUrl: './add-transactions.component.html',
+  styleUrls: ['./add-transactions.component.css'],
 })
-export class AppSamplePageComponent {
+export class AddTransactionsComponent {
   newTransaction: Transaction = new Transaction(); // Create a new instance of Transaction class
 
   categories?: any[];

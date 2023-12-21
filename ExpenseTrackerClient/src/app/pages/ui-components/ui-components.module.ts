@@ -13,7 +13,7 @@ import { UiComponentsRoutes } from './ui-components.routing';
 // ui components
 import { AppBadgeComponent } from './badge/badge.component';
 import { AppChipsComponent } from './chips/chips.component';
-import { AppListsComponent } from './lists/lists.component';
+import { AppListsComponent } from './transactions/lists.component';
 import { AppMenuComponent } from './menu/menu.component';
 import { AppTooltipsComponent } from './tooltips/tooltips.component';
 import { MatNativeDateModule } from '@angular/material/core';
