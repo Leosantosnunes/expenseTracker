@@ -3,7 +3,8 @@ import { AppDashboardComponent } from './dashboard/dashboard.component';
 import { BudgetComponent } from './budget/budget.component';
 import { IncomeComponent } from './income/income.component';
 import moment from 'moment';
-import { AddTransactionsComponent } from './add-transactions/add-transactions.component';
+import { AppAddTransactionsComponent } from './add-transactions/add-transactions.component';
+import { AppTransactionsComponent } from './transactions/transactions.component';
 
 export const PagesRoutes: Routes = [
   {
@@ -32,8 +33,12 @@ export const PagesRoutes: Routes = [
     component: IncomeComponent,
   },
   {
-    path: 'sample-page',
-    component: AddTransactionsComponent,
+    path: 'add-transactions',
+    component: AppAddTransactionsComponent,
+  },
+  {
+    path: 'transactions',
+    component: AppTransactionsComponent,
   }
 ];
 

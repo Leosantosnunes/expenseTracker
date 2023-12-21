@@ -14,13 +14,13 @@ export const navItems: NavItem[] = [
   },
   {
     displayName: 'Transactions',
-    iconName: 'list',
-    route: '/ui-components/lists',
+    iconName: 'transactions',
+    route: '/transactions',
   },
   {
     displayName: 'Add Transaction',
     iconName: 'aperture',
-    route: '/extra/sample-page',
+    route: '/add-transactions',
   },
   {
     navCap: 'Budget',

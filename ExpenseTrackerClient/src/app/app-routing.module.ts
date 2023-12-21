@@ -14,14 +14,7 @@ const routes: Routes = [
         path: '',
         loadChildren: () =>
           import('./pages/pages.module').then((m) => m.PagesModule),
-      },
-      {
-        path: 'ui-components',
-        loadChildren: () =>
-          import('./pages/ui-components/ui-components.module').then(
-            (m) => m.UicomponentsModule
-          ),
-      },      
+      },     
       {
         path: 'myAccount',
         loadChildren: () =>

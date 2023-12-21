@@ -11,7 +11,7 @@ import { CategoryGroup } from 'src/app/models/category-groups';
   templateUrl: './add-transactions.component.html',
   styleUrls: ['./add-transactions.component.css'],
 })
-export class AddTransactionsComponent {
+export class AppAddTransactionsComponent {
   newTransaction: Transaction = new Transaction(); // Create a new instance of Transaction class
 
   categories?: any[];

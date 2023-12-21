@@ -8,10 +8,10 @@ import { BudgetRepository } from 'src/app/repository/budget.repository';
 
 @Component({
   selector: 'app-lists',
-  templateUrl: './lists.component.html',
-  styleUrls: ['./lists.component.css'],
+  templateUrl: './transactions.component.html',
+  styleUrls: ['./transactions.component.css'],
 })
-export class AppListsComponent implements OnInit{
+export class AppTransactionsComponent implements OnInit{
 
  transactions ?: Transaction[] | null ;
  user ?: User;

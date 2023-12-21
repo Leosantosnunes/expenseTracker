@@ -27,7 +27,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { BudgetSummaryComponent } from './budget/budget-summary/budget-summary.component';
 import { IncomeComponent } from './income/income.component';
-import { AddTransactionsComponent } from './add-transactions/add-transactions.component';
+import { AppTransactionsComponent } from './transactions/transactions.component';
+import { TransactionsSummaryComponent } from './transactions-summary/transactions-summary.component';
+import { AppAddTransactionsComponent } from './add-transactions/add-transactions.component';
 
 // See the Moment.js docs for the meaning of these formats:
 // https://momentjs.com/docs/#/displaying/format/
@@ -44,7 +46,7 @@ export const MY_FORMATS = {
 };
 
 @NgModule({
-  declarations: [AppDashboardComponent, BudgetComponent,BudgetSummaryComponent, IncomeComponent,AddTransactionsComponent],
+  declarations: [AppDashboardComponent, BudgetComponent,BudgetSummaryComponent, IncomeComponent,AppTransactionsComponent,TransactionsSummaryComponent,AppAddTransactionsComponent],
   providers: [
     // `MomentDateAdapter` can be automatically provided by importing `MomentDateModule` in your
     // application's root module. We provide it at the component level here, due to limitations of
