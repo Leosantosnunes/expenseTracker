@@ -1,32 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { TransactionService } from 'src/app/services/transaction.service';
+import { Component } from '@angular/core';
 import { Transaction } from 'src/app/models/transaction';
-import { Observable } from 'rxjs';
 import { RestDataSource } from 'src/app/services/rest.datasource';
-import { User } from 'src/app/services/user.model';
-import { BudgetRepository } from 'src/app/repository/budget.repository';
 
 @Component({
   selector: 'app-lists',
   templateUrl: './transactions.component.html',
   styleUrls: ['./transactions.component.css'],
 })
-export class AppTransactionsComponent implements OnInit{
+export class AppTransactionsComponent{
 
  transactions ?: Transaction[] | null ;
- user ?: User;
-
 
  constructor(private dataSource: RestDataSource) {
     this.dataSource.getTransactions().subscribe(t=> {
     this.transactions = t;
 
   })
-
-}
-
-  ngOnInit() {
-  }
+  } 
 
   onDeleteTransaction(transactionId: string) {
 

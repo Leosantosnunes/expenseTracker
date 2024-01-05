@@ -9,29 +9,38 @@ const { DEFAULT_CATEGORY_GROUPS } = require('../helper/categories-helper');
 let mongoose = require('mongoose');
 const BudgetEntries = require('../models/budget-entries');
 
-router.get('/:key', requireAuth, async function (req, res, next) {
-  const key = req.params.key;
-  const userId = req.userId;
 
+//This route retrieve the budget information by key, it checks if the user has already a budget for the specified month, otherwise, it creates a new budget on the specified month setting the standard categories up.
+router.get('/:key', requireAuth, async function (req, res, next) {
+  //Extracting key and user ID from request parameters and user object
+  const key = req.params.key;  
+  const userId = req.user.id;  
+
+  //Fetch category groups linked to the user
   const categoryGroups = await CategoryGroups.find({ userId }).lean();
-  if (!categoryGroups || !categoryGroups.length) {
+  console.log(categoryGroups)
+  //If this is the first month of the respective user, it creates a new default category groups
+  if (!categoryGroups || !categoryGroups.length) {    
     const success = createUserCategories(userId);
     if (!success) {
       res.end("Error creating user categories.");
     }
   }
 
+  //Fetch budget linked to the user
   let budget = await Budgets.findOne({ userId, key }).lean();
 
+  // If the budget doesn't exist, create a new one and retrieve it
   if (!budget) {
-    createBudget(userId, key);
+    await createBudget(userId, key);
     budget = await Budgets.findOne({ key }).lean();
   }
 
   if (!budget) {
-    res.end("Error creating budget");
+    return res.end("Error creating budget");
   }
 
+  //Fetch the informations about categories according to the group, budget and budget entries to be displayed on the budget's page
   const categoryGroupsWithCategories = await CategoryGroups.aggregate([
     {
       $match: { userId: mongoose.Types.ObjectId(userId) }
@@ -44,7 +53,7 @@ router.get('/:key', requireAuth, async function (req, res, next) {
         as: "categories"
       }
     }]).exec();
-  console.log(categoryGroupsWithCategories[0].categories)
+  //console.log(categoryGroupsWithCategories[0].categories)
   const categoryGroupIds = categoryGroupsWithCategories.map(({ _id }) => _id);
   const updatedCategories = await Categories.find({ categoryGroupId: { "$in": categoryGroupIds } }).lean();
   const budgetEntries = await BudgetEntries.find({ budgetId: budget._id }).lean();
@@ -53,6 +62,7 @@ router.get('/:key', requireAuth, async function (req, res, next) {
   res.json(result);
 });
 
+//Route to create a new budget entry
 router.post('/entry', requireAuth, async function (req, res, next) {
   const newEntry = BudgetEntries({
     budgetId: req.body.budgetId,
@@ -64,6 +74,9 @@ router.post('/entry', requireAuth, async function (req, res, next) {
   res.json(createdEntry);
 });
 
+//Is it possible to combine both routes ?
+
+//Route to update a budget entry
 router.put('/entry/:id', requireAuth, async function (req, res, next) {
   const id = req.params.id;
   const entry = await BudgetEntries.findById(id).exec();
@@ -82,6 +95,8 @@ router.put('/entry/:id', requireAuth, async function (req, res, next) {
   res.json(updated);
 });
 
+
+//Route to create a customized category by the user
 router.post('/newCategory', requireAuth, async function (req, res, next) {
 
   try {
@@ -107,7 +122,7 @@ router.post('/newCategory', requireAuth, async function (req, res, next) {
   }
 }
 )
-
+//Route to delete the any category by the user
 router.delete('/deleteCategory/:_id', requireAuth, async function (req, res, next) {
 
   try {
@@ -122,13 +137,14 @@ router.delete('/deleteCategory/:_id', requireAuth, async function (req, res, nex
 }
 )
 
+//Route to edit category target
 router.post('/editTarget', requireAuth, async function (req, res, next) {
   try {
 
     const catID = req.body._id
-    console.log("first", catID);
+    //console.log("first", catID);
     const newTarget = await Categories.findById(catID);
-    console.log(newTarget)
+    //console.log(newTarget)
 
 
     newTarget.target = req.body.target;
@@ -142,6 +158,7 @@ router.post('/editTarget', requireAuth, async function (req, res, next) {
   }
 });
 
+//function to create a new budget
 function createBudget(userId, key) {
   Budgets.create({ userId, key }, (err, result) => {
     if (err) {
@@ -153,6 +170,7 @@ function createBudget(userId, key) {
   });
 }
 
+//function to create default categories for the user
 function createUserCategories(userId) {
   DEFAULT_CATEGORY_GROUPS.forEach(({ name, categories }) => {
     const categoryGroup = { userId, name };
