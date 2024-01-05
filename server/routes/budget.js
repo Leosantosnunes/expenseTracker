@@ -18,7 +18,8 @@ router.get('/:key', requireAuth, async function (req, res, next) {
 
   //Fetch category groups linked to the user
   const categoryGroups = await CategoryGroups.find({ userId }).lean();
-  console.log(categoryGroups)
+  //console.log(categoryGroups)
+
   //If this is the first month of the respective user, it creates a new default category groups
   if (!categoryGroups || !categoryGroups.length) {    
     const success = createUserCategories(userId);
@@ -112,7 +113,7 @@ router.post('/newCategory', requireAuth, async function (req, res, next) {
       "name": catName,
       //"target" : catTarget
     });
-    console.log(newCategory);
+    //console.log(newCategory);
 
     await Categories.create(newCategory);
     return res.status(200).json({ success: true, message: "Transaction added successfully" })
@@ -148,7 +149,7 @@ router.post('/editTarget', requireAuth, async function (req, res, next) {
 
 
     newTarget.target = req.body.target;
-    console.log(newTarget);
+    //console.log(newTarget);
     await newTarget.save()
 
     return res.status(200).json({ success: true, message: "Transaction has been edited successfully" })

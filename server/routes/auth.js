@@ -5,6 +5,8 @@ let jwt = require('jsonwebtoken');
 let DB = require('../config/db');
 let User = require('../models/user');
 
+
+//Route for user login
 router.post('/login', (req, res, next) => {
 	passport.authenticate('local', (err, user, info) => {
 		//server err
@@ -40,6 +42,7 @@ router.post('/login', (req, res, next) => {
 	})(req, res, next);
 });
 
+//Route to register a new user
 router.post('/register', (req, res, next) => {
 	let newUser = new User({
 		email: req.body.email,
@@ -66,6 +69,7 @@ router.post('/register', (req, res, next) => {
 	});
 });
 
+//function for authentication check
 function requireAuth(req, res, next) {
 	const authHeader = req.headers['authorization']
 	const token = authHeader && authHeader.split(' ')[1]
