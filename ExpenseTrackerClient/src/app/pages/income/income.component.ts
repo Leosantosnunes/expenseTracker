@@ -2,6 +2,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Transaction } from 'src/app/models/transaction';
 import { RestDataSource } from 'src/app/services/rest.datasource';
+import { TransactionRepository } from 'src/app/repository/transaction.repository';
 import * as XLSX from 'xlsx';
 
 import {
@@ -25,8 +26,8 @@ export class IncomeComponent {
   transactions ?: Transaction[] | null ;
   date: any;
   
-  constructor(private dataSource: RestDataSource) {
-    this.dataSource.getTransactions().subscribe(t=> {
+  constructor(private transactionRepo: TransactionRepository) {
+    this.transactionRepo.getTransactions().subscribe(t=> {
     this.transactions = t;
     console.log(this.transactions);
     })

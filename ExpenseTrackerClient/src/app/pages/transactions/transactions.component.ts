@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Transaction } from 'src/app/models/transaction';
 import { RestDataSource } from 'src/app/services/rest.datasource';
+import { TransactionRepository } from 'src/app/repository/transaction.repository';
 
 @Component({
   selector: 'app-lists',
@@ -11,8 +12,8 @@ export class AppTransactionsComponent{
 
  transactions ?: Transaction[] | null ;
 
- constructor(private dataSource: RestDataSource) {
-    this.dataSource.getTransactions().subscribe(t=> {
+ constructor(private dataSource: RestDataSource, private transactionRepo:TransactionRepository) {
+    this.transactionRepo.getTransactions().subscribe(t=> {
     this.transactions = t;
 
   })
@@ -20,7 +21,7 @@ export class AppTransactionsComponent{
 
   onDeleteTransaction(transactionId: string) {
 
-    this.dataSource.deleteTransaction(transactionId).subscribe(
+    this.transactionRepo.deleteTransaction(transactionId).subscribe(
 
       (response) => {
         console.log('Transaction deleted:', response);
@@ -50,7 +51,7 @@ export class AppTransactionsComponent{
 
 
   saveChanges(transactionId: string, transaction: Transaction): void {
-    this.dataSource.editTransaction(transactionId, transaction).subscribe(
+    this.transactionRepo.editTransaction(transactionId, transaction).subscribe(
 
       (response) => {
         console.log('Transaction edited:', response);

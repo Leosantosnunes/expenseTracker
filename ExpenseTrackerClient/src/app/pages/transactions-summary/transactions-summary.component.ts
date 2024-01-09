@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Transaction } from 'src/app/models/transaction';
 import { RestDataSource } from 'src/app/services/rest.datasource';
+import { TransactionRepository } from 'src/app/repository/transaction.repository';
 
 @Component({
   selector: 'app-transactions-summary',
@@ -11,8 +12,8 @@ export class TransactionsSummaryComponent {
 
   transactions ?: Transaction[] | null ;
 
-  constructor(private dataSource: RestDataSource) {
-    this.dataSource.getTransactions().subscribe(t=> {
+  constructor(private transactionRepo: TransactionRepository) {
+    this.transactionRepo.getTransactions().subscribe(t=> {
     this.transactions = t;
     console.log(this.transactions);
     })

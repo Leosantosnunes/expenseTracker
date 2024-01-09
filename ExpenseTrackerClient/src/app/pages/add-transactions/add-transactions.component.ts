@@ -5,6 +5,7 @@ import { RestDataSource } from 'src/app/services/rest.datasource';
 import { Router } from '@angular/router';
 import { Categories } from 'src/app/models/categories';
 import { CategoryGroup } from 'src/app/models/category-groups';
+import { TransactionRepository } from 'src/app/repository/transaction.repository';
 
 @Component({
   selector: 'app-sample-page',
@@ -17,7 +18,7 @@ export class AppAddTransactionsComponent {
   categories?: any[];
   subCategories?: Categories[];
 
-  constructor(private restDataSource: RestDataSource, private router: Router) {
+  constructor(private restDataSource: RestDataSource, private router: Router, private transactionRepo: TransactionRepository) {
     this.restDataSource.getCategoryGroups().subscribe((c) => {
       this.categories = c;
     });
@@ -40,7 +41,7 @@ export class AppAddTransactionsComponent {
 
       //It sends the newTransaction data to the backend via the addTransaction method in the RestDataSource service.
 
-      this.restDataSource.addTransaction(this.newTransaction).subscribe((t) => {
+      this.transactionRepo.addTransaction(this.newTransaction).subscribe((t) => {
         form.resetForm;
 
         // Reset the newTransaction object to prepare for the next transaction

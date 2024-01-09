@@ -35,6 +35,7 @@ import { SettingsService } from './services/settings.service';
 import { BudgetRepository } from './repository/budget.repository';
 import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { TransactionRepository } from './repository/transaction.repository';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     AuthGuard,
     SettingsService,
     BudgetRepository,
+    TransactionRepository
   ],
 })
 export class AppModule {}

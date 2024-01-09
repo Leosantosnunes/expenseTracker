@@ -127,38 +127,25 @@ export class RestDataSource {
     return this.http.post<any>(this.baseUrl + path, data, this.httpOptions);
   }
 
+  patch(path: string, data: any): Observable<any> {
+    return this.http.patch<any>(this.baseUrl + path, data, this.httpOptions);
+  }
+
   put(path: string, data: any): Observable<any> {
     return this.http.put<any>(this.baseUrl + path, data, this.httpOptions);
   }
 
-  delete(path: string): Observable<any> {
-    return this.http.delete<any>(this.baseUrl + path, this.httpOptions);
+  delete(path: string, data?: string): Observable<any> {
+    if(data){
+      return this.http.put<any>(this.baseUrl + path, data, this.httpOptions);
+    }
+    else{
+      return this.http.delete<any>(this.baseUrl + path, this.httpOptions);
+    }
+    
   }
 
-  /**********************TRANSACTIONS**************************/
-
-  addTransaction(newTransaction: Transaction): Observable<Transaction>
-  {
-    this.loadToken();
-    return this.http.post<Transaction>(this.baseUrl + 'transactions/newTransaction', newTransaction, this.httpOptions); // Perform POST request to add a new transaction
-  }
-
-  getTransactions(): Observable<Transaction[]>
-  {
-    this.loadToken();
-    return this.http.get<Transaction[]>(this.baseUrl + 'transactions/getTransactions', this.httpOptions); // Perform GET request to add a new transaction
-  }
-
-  deleteTransaction(transactionId: string): Observable<any> {
-    return this.http.delete<any>(this.baseUrl + 'transactions/deleteTransaction/' + transactionId, this.httpOptions);
-  }
-
-  editTransaction(transactionId: string, updatedTransaction: Transaction): Observable<any> {
-    this.loadToken();
-    const url = `${this.baseUrl}transactions/editTransaction/${transactionId}`;
-    return this.http.patch<any>(url, updatedTransaction , this.httpOptions);
-  }
-
+  /**********************TRANSACTIONS**************************/  
 
   getCategories(): Observable<Categories[]> {
     return this.http.get<Categories[]>(this.baseUrl + 'transactions/getCategories', this.httpOptions);

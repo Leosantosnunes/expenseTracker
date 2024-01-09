@@ -18,6 +18,7 @@ import {
 } from 'ng-apexcharts';
 import { Transaction } from 'src/app/models/transaction';
 import { RestDataSource } from 'src/app/services/rest.datasource';
+import { TransactionRepository } from 'src/app/repository/transaction.repository';
 
 interface month {
   value: string;
@@ -152,8 +153,8 @@ export class AppDashboardComponent {
   transactions?: Transaction[] | null;
   selected: Date | null;
 
-  constructor(private dataSource2: RestDataSource) {
-    this.dataSource2.getTransactions().subscribe((t) => {
+  constructor(private transactionRepo: TransactionRepository) {
+    this.transactionRepo.getTransactions().subscribe((t) => {
       this.transactions = t;
       console.log(this.transactions);
       const series: number[] = [];

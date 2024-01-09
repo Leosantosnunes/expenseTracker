@@ -2,12 +2,13 @@ import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { TransactionsSummaryComponent } from './transactions-summary.component';
 import { Transaction } from 'src/app/models/transaction';
 import { RestDataSource } from 'src/app/services/rest.datasource';
+import { TransactionRepository } from 'src/app/repository/transaction.repository';
 import { of } from 'rxjs';
 
 describe('TransactionsSummaryComponent', () => {
   let component: TransactionsSummaryComponent;
   let fixture: ComponentFixture<TransactionsSummaryComponent>;
-  let mockDataSource: Partial<RestDataSource>;
+  let mockDataSource: Partial<TransactionRepository>;
 
   beforeEach(async () => {
     mockDataSource = {
@@ -18,7 +19,7 @@ describe('TransactionsSummaryComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [TransactionsSummaryComponent],
-      providers: [{ provide: RestDataSource, useValue: mockDataSource }]
+      providers: [{ provide: TransactionRepository, useValue: mockDataSource }]
     }).compileComponents();
   });
 
