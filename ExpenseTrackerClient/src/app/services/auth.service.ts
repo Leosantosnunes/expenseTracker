@@ -25,12 +25,7 @@ export class AuthService {
     console.log(this.datasource.authToken);
     return !!this.datasource.authToken;
   }
-
-logout(): Observable<any>
-    {
-        return this.datasource.logout();
-    }
-
+  
   storeUserData(token:any){
     this.datasource.storeUserData(token);
   }

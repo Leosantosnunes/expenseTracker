@@ -86,26 +86,6 @@ export class RestDataSource {
       );
   }
 
-  deleteMyAccount(): Observable<boolean> {
-    this.loadToken();
-    if (!this.authToken) {
-      return throwError('Authentication token missing');
-    }
-    return this.http.delete<any>(
-      this.baseUrl + 'myaccount/deleteMyAccount',
-      this.httpOptions
-    );
-  }
-
-  logout(): Observable<any> {
-    this.authToken = null!;
-    localStorage.clear();
-    return this.http.get<any>(
-      this.baseUrl + 'myaccount/logout',
-      this.httpOptions
-    );
-  }
-
   storeUserData(token: any): void {
     localStorage.setItem('id_token', 'Bearer ' + token);
   }

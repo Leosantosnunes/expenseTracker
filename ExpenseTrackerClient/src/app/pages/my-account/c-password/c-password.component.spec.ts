@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CPasswordComponent } from './c-password.component';
-import { SettingsService } from 'src/app/services/settings.service';
+import { SettingsService } from 'src/app/repository/settings.repository';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 

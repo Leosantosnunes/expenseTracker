@@ -8,7 +8,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
-import { SettingsService } from 'src/app/services/settings.service';
+import { SettingsRepository } from 'src/app/repository/settings.repository';
 
 
 @Component({
@@ -25,7 +25,7 @@ export class HeaderComponent {
 
   showFiller = false;
 
-  constructor(public dialog: MatDialog, private settingsService: SettingsService, private route:Router) {}
+  constructor(public dialog: MatDialog, private settingsService: SettingsRepository, private route:Router) {}
 
   logout(){
     this.settingsService.logout().subscribe(

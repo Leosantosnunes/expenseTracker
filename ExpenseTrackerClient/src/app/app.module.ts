@@ -31,7 +31,7 @@ import { RestDataSource } from './services/rest.datasource';
 import { AuthService } from './services/auth.service';
 import { AuthenticationModule } from './pages/authentication/authentication.module';
 import { AuthGuard } from './app-auth.guard';
-import { SettingsService } from './services/settings.service';
+import { SettingsRepository } from './repository/settings.repository';
 import { BudgetRepository } from './repository/budget.repository';
 import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -69,7 +69,7 @@ import { TransactionRepository } from './repository/transaction.repository';
     RestDataSource,
     AuthService,
     AuthGuard,
-    SettingsService,
+    SettingsRepository,
     BudgetRepository,
     TransactionRepository
   ],

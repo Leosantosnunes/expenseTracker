@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { SettingsService } from 'src/app/services/settings.service';
+import { SettingsRepository } from 'src/app/repository/settings.repository';
 
 @Component({
   selector: 'app-settings',
@@ -9,12 +9,12 @@ import { SettingsService } from 'src/app/services/settings.service';
 })
 export class SettingsComponent {
   constructor(
-    private settingsService: SettingsService,
+    private settingsService: SettingsRepository,
     private route: Router
   ) {}
 
   deleteAccount() {
-    this.settingsService.dAccount().subscribe(
+    this.settingsService.deleteMyAccount().subscribe(
       (response) => {
         // Handle success response, e.g., redirecting to a different page
         console.log('Account deleted successfully', response);

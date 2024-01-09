@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
-import { SettingsService } from 'src/app/services/settings.service';
+import { SettingsRepository } from 'src/app/repository/settings.repository';
 
 @Component({
   selector: 'app-c-password',
@@ -22,7 +22,7 @@ export class CPasswordComponent {
     return this.form.controls;
   }
 
-  constructor(private router: Router, private settings: SettingsService) {}
+  constructor(private router: Router, private settings: SettingsRepository) {}
 
   cPassword() {
     if (this.form.valid) {
