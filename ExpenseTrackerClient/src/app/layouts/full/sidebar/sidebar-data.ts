@@ -14,7 +14,7 @@ export const navItems: NavItem[] = [
   },
   {
     displayName: 'Transactions',
-    iconName: 'transactions',
+    iconName: 'rosette',
     route: '/transactions',
   },
   {
@@ -27,7 +27,7 @@ export const navItems: NavItem[] = [
   },
   {
     displayName: 'Budget',
-    iconName: 'list',
+    iconName: 'list-details',
     route: '/budget',
   },
   {
@@ -45,50 +45,5 @@ export const navItems: NavItem[] = [
     displayName: 'Settings',
     iconName: 'user-plus',
     route: '/myAccount/settings',
-  },
-  // {
-  //   navCap: 'Ui Components',
-  // },
-  // {
-  //   displayName: 'Badge',
-  //   iconName: 'rosette',
-  //   route: '/ui-components/badge',
-  // },
-  // {
-  //   displayName: 'Chips',
-  //   iconName: 'poker-chip',
-  //   route: '/ui-components/chips',
-  // },
-  // {
-  //   displayName: 'Menu',
-  //   iconName: 'layout-navbar-expand',
-  //   route: '/ui-components/menu',
-  // },
-  // {
-  //   displayName: 'Tooltips',
-  //   iconName: 'tooltip',
-  //   route: '/ui-components/tooltips',
-  // },
-  //   {
-  //     navCap: 'Auth',
-  //   },
-  //   {
-  //     displayName: 'Login',
-  //     iconName: 'lock',
-  //     route: '/authentication/login',
-  //   },
-  //   {
-  //     displayName: 'Register',
-  //     iconName: 'user-plus',
-  //     route: '/authentication/register',
-  //   },
-  //   {
-  //     navCap: 'Extra',
-  //   },
-  //   {
-  //     displayName: 'Icons',
-  //     iconName: 'mood-smile',
-  //     route: '/extra/icons',
-  //   },
-
+  }
 ];

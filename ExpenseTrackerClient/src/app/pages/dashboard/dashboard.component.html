@@ -121,6 +121,12 @@
           ></apx-chart>
         </mat-card>
       </div>
+      <div>
+        <mat-card class="demo-inline-calendar-card">
+          <mat-calendar [(selected)]="selected"></mat-calendar>
+        </mat-card>
+        <p>Selected date: {{selected}}</p>        
+      </div>
     </div>
   </div>
 </div>

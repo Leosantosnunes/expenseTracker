@@ -6,6 +6,10 @@ const DEFAULT_CATEGORY_GROUPS = [
   {
     name: "Frequent",
     categories: ["Groceries", "Eating Out", "Transportation"]
+  },
+  {
+    name: "Salary",
+    categories:["Salary"]
   }
 ];
 

@@ -150,6 +150,7 @@ export class AppDashboardComponent {
   ]; //updated months
 
   transactions?: Transaction[] | null;
+  selected: Date | null;
 
   constructor(private dataSource2: RestDataSource) {
     this.dataSource2.getTransactions().subscribe((t) => {

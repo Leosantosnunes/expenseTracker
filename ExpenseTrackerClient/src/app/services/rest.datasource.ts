@@ -4,7 +4,6 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { HttpHeaders } from '@angular/common/http';
 import { Transaction } from '../models/transaction';
-import { User } from './user.model';
 import { Categories } from '../models/categories';
 import { CategoryGroup } from '../models/category-groups';
 
@@ -63,6 +62,7 @@ export class RestDataSource {
         })
       );
   }
+  
   changePassword(
     currentPassword: string | null,
     newPassword: string | null,
@@ -72,7 +72,6 @@ export class RestDataSource {
     if (!this.authToken) {
       return throwError('Authentication token missing');
     }
-
     return this.http
       .post<any>(
         this.baseUrl + 'myaccount/changePassword',
@@ -86,6 +85,7 @@ export class RestDataSource {
         })
       );
   }
+
   deleteMyAccount(): Observable<boolean> {
     this.loadToken();
     if (!this.authToken) {

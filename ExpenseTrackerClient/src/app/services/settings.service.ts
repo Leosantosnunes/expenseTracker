@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RestDataSource } from './rest.datasource';
-import { User } from './user.model';
 
 @Injectable()
 export class SettingsService {

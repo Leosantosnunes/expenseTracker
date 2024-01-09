@@ -19,10 +19,7 @@ export class AppAddTransactionsComponent {
 
   constructor(private restDataSource: RestDataSource, private router: Router) {
     this.restDataSource.getCategoryGroups().subscribe((c) => {
-      this.categories = [
-        ...c,
-        { name: 'Salary', categories: [{ name: 'Salary' }] },
-      ];
+      this.categories = c;
     });
   }
 
