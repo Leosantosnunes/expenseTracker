@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Transaction } from 'src/app/models/transaction';
 import { RestDataSource } from 'src/app/services/rest.datasource';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Categories } from 'src/app/models/categories';
 import { CategoryGroup } from 'src/app/models/category-groups';
 import { TransactionRepository } from 'src/app/repository/transaction.repository';
+import { BudgetRepository } from 'src/app/repository/budget.repository';
 
 @Component({
   selector: 'app-sample-page',
@@ -19,9 +20,9 @@ export class AppAddTransactionsComponent {
   subCategories?: Categories[];
 
   constructor(private restDataSource: RestDataSource, private router: Router, private transactionRepo: TransactionRepository) {
-    this.restDataSource.getCategoryGroups().subscribe((c) => {
+    this.transactionRepo.getCategoryGroups().subscribe((c) => {
       this.categories = c;
-    });
+    });    
   }
 
   onChangeCategory(categoryName: any) {

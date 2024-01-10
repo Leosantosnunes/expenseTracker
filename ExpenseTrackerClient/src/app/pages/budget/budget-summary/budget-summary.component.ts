@@ -31,10 +31,7 @@ export class BudgetSummaryComponent {
       flattenList.push(...categoryGroup.categories);
     });
     return flattenList;
-  }
-
-  private cachedEntries: number | undefined;
-  private cachedTarget: number | undefined;
+  } 
 
   getcalculateEntries(): number {
     const entriesArray = Object.values(

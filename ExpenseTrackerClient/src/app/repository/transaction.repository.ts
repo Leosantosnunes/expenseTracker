@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { RestDataSource } from '../services/rest.datasource';
 import { Transaction } from '../models/transaction';
 import { Observable, Observer } from 'rxjs';
+import { CategoryGroup } from '../models/category-groups';
 
 @Injectable()
 export class TransactionRepository {
@@ -29,5 +30,9 @@ export class TransactionRepository {
   editTransaction(transactionId: string, updatedTransaction: Transaction): Observable<any> {
     this.dataSource.loadToken();
     return this.dataSource.patch(`transactions/editTransaction/${transactionId}`, updatedTransaction)    
+  }
+
+  getCategoryGroups(): Observable<CategoryGroup[]> {
+    return this.dataSource.get('transactions/categorygroups');    
   }
 }

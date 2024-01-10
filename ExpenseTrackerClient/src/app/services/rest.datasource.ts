@@ -125,16 +125,9 @@ export class RestDataSource {
     
   }
 
-  /**********************TRANSACTIONS**************************/  
-
-  getCategories(): Observable<Categories[]> {
-    return this.http.get<Categories[]>(this.baseUrl + 'transactions/getCategories', this.httpOptions);
-  }
-
-  getCategoryGroups(): Observable<CategoryGroup[]> {
-    return this.http.get<CategoryGroup[]>(this.baseUrl + 'transactions/categorygroups', this.httpOptions);
-  }
 }
+
+
 
 
 
