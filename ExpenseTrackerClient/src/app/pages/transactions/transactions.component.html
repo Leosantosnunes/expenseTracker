@@ -8,6 +8,7 @@
       <thead>
         <tr class="transaction-header">
           <th class="date-column">Date</th>
+          <th class="desc-column">Category</th>
           <th class="desc-column">Description</th>
           <th class="subt-column">Subtotal</th>
           <th class="btn-column"></th> <!-- Empty header for buttons -->
@@ -24,8 +25,14 @@
                 <input type="date" [(ngModel)]="transaction.date">
               </ng-template>
             </td>
-
-
+            <td class="desc-column">
+              <ng-container *ngIf="!transaction.editable; else editableDescriptionField">
+                {{ transaction.subcategory }}
+              </ng-container>
+              <ng-template #editableDescriptionField>
+                <input type="text" [(ngModel)]="transaction.subcategory">
+              </ng-template>
+            </td>
             <td class="desc-column">
               <ng-container *ngIf="!transaction.editable; else editableDescriptionField">
                 {{ transaction.description }}

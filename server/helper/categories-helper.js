@@ -1,15 +1,15 @@
 const DEFAULT_CATEGORY_GROUPS = [
   {
     name: "Bills",
-    categories: ["Rent/Mortgage", "Eletric", "Water", "Internet", "Cellphone"]
+    categories: ["Rent/Mortgage", "Eletric", "Water", "Internet", "Cellphone","Pets","Education"]
   },
   {
     name: "Frequent",
-    categories: ["Groceries", "Eating Out", "Transportation"]
+    categories: ["Food","Social Life","Transport","Culture","HouseHold","Apparel","Beauty","Health","Education","Gift"]
   },
   {
-    name: "Salary",
-    categories:["Salary"]
+    name: "Income",
+    categories:["Allowance","Salary","Petty cash","Bonus"]
   }
 ];
 

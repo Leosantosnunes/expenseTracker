@@ -1,5 +1,5 @@
-import { Component, ViewEncapsulation, ViewChild } from '@angular/core';
-import { fail } from 'assert';
+import { Component, ViewEncapsulation, ViewChild, TemplateRef} from '@angular/core';
+import {MatCalendarCellClassFunction} from '@angular/material/datepicker';
 import {
   ApexChart,
   ChartComponent,
@@ -17,8 +17,29 @@ import {
   ApexResponsive,
 } from 'ng-apexcharts';
 import { Transaction } from 'src/app/models/transaction';
-import { RestDataSource } from 'src/app/services/rest.datasource';
 import { TransactionRepository } from 'src/app/repository/transaction.repository';
+import * as moment from 'moment';
+import {
+  startOfDay,
+  endOfDay,
+  subDays,
+  addDays,
+  endOfMonth,
+  isSameDay,
+  isSameMonth,
+  addHours,
+} from 'date-fns';
+import { Subject } from 'rxjs';
+import {
+  CalendarEvent,
+  CalendarEventAction,
+  CalendarEventTimesChangedEvent,
+  CalendarView,
+} from 'angular-calendar';
+import { EventColor } from 'calendar-utils';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+
 
 interface month {
   value: string;
@@ -129,9 +150,25 @@ const ELEMENT_DATA: productsData[] = [
   },
 ];
 
+const colors: Record<string, EventColor> = {
+  red: {
+    primary: '#ad2121',
+    secondary: '#FAE3E3',
+  },
+  blue: {
+    primary: '#1e90ff',
+    secondary: '#D1E8FF',
+  },
+  yellow: {
+    primary: '#e3bc08',
+    secondary: '#FDF1BA',
+  },
+};
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
 export class AppDashboardComponent {
@@ -151,203 +188,175 @@ export class AppDashboardComponent {
   ]; //updated months
 
   transactions?: Transaction[] | null;
-  selected: Date | null;
+  selected: Date | null;  
+  dayList: CalendarEvent[] = [];
+  day: Date = new Date();    
+  dateClass : MatCalendarCellClassFunction<Date>;
 
-  constructor(private transactionRepo: TransactionRepository) {
+  //Teste//
+
+  @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
+
+  view: CalendarView = CalendarView.Month;
+
+  CalendarView = CalendarView;
+
+  viewDate: Date = new Date();
+
+  modalData: {
+    action: string;
+    event: CalendarEvent;
+  };
+
+  actions: CalendarEventAction[] = [
+    {
+      label: '<i class="fas fa-fw fa-pencil-alt"></i>',
+      a11yLabel: 'Edit',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.handleEvent('Edited', event);
+      },
+    },
+    {
+      label: '<i class="fas fa-fw fa-trash-alt"></i>',
+      a11yLabel: 'Delete',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.events = this.events.filter((iEvent) => iEvent !== event);
+        this.handleEvent('Deleted', event);
+      },
+    },
+  ];
+
+  refresh = new Subject<void>();
+
+  events: CalendarEvent[] = [
+    {
+      start: subDays(startOfDay(new Date()), 1),
+      end: addDays(new Date(), 1),
+      title: 'A 3 day event',
+      color: { ...colors['red'] },
+      actions: this.actions,
+      allDay: true,
+      resizable: {
+        beforeStart: true,
+        afterEnd: true,
+      },
+      draggable: true,
+    },
+    {
+      start: startOfDay(new Date()),
+      title: 'An event with no end date',
+      color: { ...colors['yellow'] },
+      actions: this.actions,
+    },
+    {
+      start: subDays(endOfMonth(new Date()), 3),
+      end: addDays(endOfMonth(new Date()), 3),
+      title: 'A long event that spans 2 months',
+      color: { ...colors['blue'] },
+      allDay: true,
+    },
+    {
+      start: addHours(startOfDay(new Date()), 2),
+      end: addHours(new Date(), 2),
+      title: 'A draggable and resizable event',
+      color: { ...colors['yellow'] },
+      actions: this.actions,
+      resizable: {
+        beforeStart: true,
+        afterEnd: true,
+      },
+      draggable: true,
+    },
+  ];
+
+  activeDayIsOpen: boolean = true;
+  
+  
+  constructor(private transactionRepo: TransactionRepository,private modals: NgbModal) {
     this.transactionRepo.getTransactions().subscribe((t) => {
-      this.transactions = t;
-      console.log(this.transactions);
+      this.transactions = t;      
       const series: number[] = [];
       const labels: (string | undefined)[] = [];
-      this.transactions.forEach((item) => {
+      this.transactions.forEach((item) => {              
         if (item.status != 'Payment') return;
-
         series.push(item.amount);
-        labels.push(item.subcategory);
+        labels.push(item.subcategory); 
+             
       });
-      this.spendingsChart.series = series;
-      this.spendingsChart.labels = labels;
     });
+  }
 
-    // sales overview chart
-    this.salesOverviewChart = {
-      series: [
-        {
-          name: 'Eanings this month',
-          data: [355, 390, 300, 350, 390, 180, 355, 390],
-          color: '#537D3D',
-        },
-        {
-          name: 'Expense this month',
-          data: [280, 250, 325, 215, 250, 310, 280, 250],
-          color: '#E96B46',
-        },
-      ],
+  //test//
 
-      grid: {
-        borderColor: 'rgba(0,0,0,0.1)',
-        strokeDashArray: 3,
-        xaxis: {
-          lines: {
-            show: false,
-          },
-        },
-      },
-      plotOptions: {
-        bar: { horizontal: false, columnWidth: '35%', borderRadius: [4] },
-      },
-      chart: {
-        type: 'bar',
-        height: 390,
-        offsetX: -15,
-        toolbar: { show: true },
-        foreColor: '#252525',
-        fontFamily: 'inherit',
-        sparkline: { enabled: false },
-      },
-      dataLabels: { enabled: false },
-      markers: { size: 0 },
-      legend: { show: false },
-      xaxis: {
-        type: 'category',
-        categories: [
-          '16/09',
-          '17/09',
-          '18/09',
-          '19/09',
-          '20/09',
-          '21/09',
-          '22/09',
-          '23/09',
-        ],
-        labels: {
-          style: { cssClass: 'grey--text lighten-2--text fill-color' },
-        },
-      },
-      yaxis: {
-        show: true,
-        min: 0,
-        max: 400,
-        tickAmount: 4,
-        labels: {
-          style: {
-            cssClass: 'grey--text lighten-2--text fill-color',
-          },
-        },
-      },
-      stroke: {
-        show: true,
-        width: 3,
-        lineCap: 'butt',
-        colors: ['transparent'],
-      },
-      tooltip: { theme: 'light' },
+  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+    if (isSameMonth(date, this.viewDate)) {
+      if (
+        (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
+        events.length === 0
+      ) {
+        this.activeDayIsOpen = false;
+      } else {
+        this.activeDayIsOpen = true;
+      }
+      this.viewDate = date;
+    }
+  }
 
-      responsive: [
-        {
-          breakpoint: 600,
-          options: {
-            plotOptions: {
-              bar: {
-                borderRadius: 3,
-              },
-            },
-          },
-        },
-      ],
-    };
+  eventTimesChanged({
+    event,
+    newStart,
+    newEnd,
+  }: CalendarEventTimesChangedEvent): void {
+    this.events = this.events.map((iEvent) => {
+      if (iEvent === event) {
+        return {
+          ...event,
+          start: newStart,
+          end: newEnd,
+        };
+      }
+      return iEvent;
+    });
+    this.handleEvent('Dropped or resized', event);
+  }
 
-    //Total Spendings this Month chart
-    this.spendingsChart = {
-      series: [38, 40, 25],
-      labels: [],
-      chart: {
-        type: 'donut',
-        fontFamily: "'Plus Jakarta Sans', sans-serif;",
-        foreColor: '#adb0bb',
-        toolbar: {
-          show: false,
-        },
-        height: 130,
-      },
+  handleEvent(action: string, event: CalendarEvent): void {
+    this.modalData = { event, action };
+    this.modals.open(this.modalContent, { size: 'lg' });
+  }
 
-      colors: ['#537D3D', '#58BDFF', '#FF4560'],
-      plotOptions: {
-        pie: {
-          startAngle: 0,
-          endAngle: 360,
-          donut: {
-            size: '65%',
-            background: 'transparent',
-          },
+  addEvent(): void {
+    this.events = [
+      ...this.events,
+      {
+        title: 'New event',
+        start: startOfDay(new Date()),
+        end: endOfDay(new Date()),
+        color: colors['red'],
+        draggable: true,
+        resizable: {
+          beforeStart: true,
+          afterEnd: true,
         },
       },
-      stroke: {
-        show: false,
-      },
-      dataLabels: {
-        enabled: true,
-      },
-      legend: {
-        show: false,
-      },
-      responsive: [
-        {
-          breakpoint: 991,
-          options: {
-            chart: {
-              width: 200,
-            },
-          },
-        },
-      ],
-      tooltip: {
-        enabled: true,
-      },
-    };
+    ];
+  }
 
-    // mohtly earnings chart
-    this.monthlyChart = {
-      series: [
-        {
-          name: '',
-          color: '#E96B46', //red
-          data: [25, 66, 20, 40, 12, 58, 20],
-        },
-      ],
+  deleteEvent(eventToDelete: CalendarEvent) {
+    this.events = this.events.filter((event) => event !== eventToDelete);
+  }
 
-      chart: {
-        type: 'area',
-        fontFamily: "'Plus Jakarta Sans', sans-serif;",
-        foreColor: '#adb0bb',
-        toolbar: {
-          show: false,
-        },
-        height: 60,
-        sparkline: {
-          enabled: true,
-        },
-        group: 'sparklines',
-      },
-      stroke: {
-        curve: 'smooth',
-        width: 2,
-      },
-      fill: {
-        colors: ['#537D3D'],
-        type: 'solid',
-        opacity: 0.05,
-      },
-      markers: {
-        size: 0,
-      },
-      tooltip: {
-        theme: 'dark',
-        x: {
-          show: false,
-        },
-      },
-    };
+  setView(view: CalendarView) {
+    this.view = view;
+  }
+
+  closeOpenMonthViewDay() {
+    this.activeDayIsOpen = false;
+  }
+
+
+  loadEvents(){
+    console.log(this.transactions)    
   }
 
   getMessage() {
@@ -358,8 +367,35 @@ export class AppDashboardComponent {
     let total = 0;
     this.transactions?.forEach((item) => {
       if (item.status != 'Payment') return;
-      total += item.amount;
+      total += item.amount;      
     });
     return `$${total}`;
-  }
+  }  
+
+  // getData(){
+  //   this.transactionRepo.getTransactions().subscribe((t) => {
+  //     this.transactions = t;     
+  //     this.transactions.forEach((item) => {        
+  //       const days = new Date(item.date);               
+  //       this.dayList.push(days)       
+  //     })})
+  // }
+
+  // dateClassTest(): MatCalendarCellClassFunction<Date> {      
+  //   return (cellDate: Date, view: string) => {  
+  //     this.getData()  
+  //     if (view === 'month' && moment.isMoment(cellDate)) {
+  //       const date = cellDate.toDate(); 
+  //       console.log(this.dayList[0])
+  //       console.log(this.dayList)      
+  //       if(this.dayList.includes(date)){
+  //         return 'highlight-date'
+  //       }       
+  //     }  
+  //     return '';
+  //   };      
+  // }
+
 }
+  
+

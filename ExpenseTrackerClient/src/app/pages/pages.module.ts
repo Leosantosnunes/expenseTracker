@@ -15,7 +15,7 @@ import {
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
 } from '@angular/material-moment-adapter';
 import {
-  DateAdapter,
+  
   MAT_DATE_FORMATS,
   MAT_DATE_LOCALE,
 } from '@angular/material/core';
@@ -30,6 +30,8 @@ import { IncomeComponent } from './income/income.component';
 import { AppTransactionsComponent } from './transactions/transactions.component';
 import { TransactionsSummaryComponent } from './transactions-summary/transactions-summary.component';
 import { AppAddTransactionsComponent } from './add-transactions/add-transactions.component';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 // See the Moment.js docs for the meaning of these formats:
 // https://momentjs.com/docs/#/displaying/format/
@@ -51,12 +53,12 @@ export const MY_FORMATS = {
     // `MomentDateAdapter` can be automatically provided by importing `MomentDateModule` in your
     // application's root module. We provide it at the component level here, due to limitations of
     // our example generation script.
-    {
-      provide: DateAdapter,
-      useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
-    },
-    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    // {
+    //   provide: DateAdapter,
+    //   useClass: MomentDateAdapter,
+    //   deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+    // },
+    // { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
   imports: [
     CommonModule,
@@ -69,6 +71,10 @@ export const MY_FORMATS = {
     MatInputModule,
     MatDatepickerModule,
     ReactiveFormsModule,
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    }),
   ],
   exports: [TablerIconsModule],
 })

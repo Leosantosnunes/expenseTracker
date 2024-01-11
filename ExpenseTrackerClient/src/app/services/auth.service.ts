@@ -21,8 +21,7 @@ export class AuthService {
   }
 
   get authenticated(): boolean {
-    this.datasource.loadToken();
-    console.log(this.datasource.authToken);
+    this.datasource.loadToken();    
     return !!this.datasource.authToken;
   }
   

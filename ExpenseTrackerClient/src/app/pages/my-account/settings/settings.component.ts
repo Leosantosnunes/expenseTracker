@@ -19,6 +19,7 @@ export class SettingsComponent {
         // Handle success response, e.g., redirecting to a different page
         console.log('Account deleted successfully', response);
         this.settingsService.logout();
+        window.location.reload();
         // Perform any other necessary actions after account deletion
       },
       (error) => {

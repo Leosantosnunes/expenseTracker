@@ -36,6 +36,8 @@ import { BudgetRepository } from './repository/budget.repository';
 import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { TransactionRepository } from './repository/transaction.repository';
+import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+
 
 @NgModule({
   declarations: [
@@ -62,6 +64,8 @@ import { TransactionRepository } from './repository/transaction.repository';
     MatCardModule,
     MatTableModule,
     CommonModule,
+    BrowserAnimationsModule,
+    NgbModalModule,   
   ],
   exports: [TablerIconsModule],
   bootstrap: [AppComponent],
