@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, ViewChild, TemplateRef} from '@angular/core';
+import { Component, ViewEncapsulation, OnInit} from '@angular/core';
 import {MatCalendarCellClassFunction} from '@angular/material/datepicker';
 import {
   ApexChart,
@@ -18,26 +18,7 @@ import {
 } from 'ng-apexcharts';
 import { Transaction } from 'src/app/models/transaction';
 import { TransactionRepository } from 'src/app/repository/transaction.repository';
-import * as moment from 'moment';
-import {
-  startOfDay,
-  endOfDay,
-  subDays,
-  addDays,
-  endOfMonth,
-  isSameDay,
-  isSameMonth,
-  addHours,
-} from 'date-fns';
-import { Subject } from 'rxjs';
-import {
-  CalendarEvent,
-  CalendarEventAction,
-  CalendarEventTimesChangedEvent,
-  CalendarView,
-} from 'angular-calendar';
-import { EventColor } from 'calendar-utils';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
 
 
 
@@ -150,29 +131,13 @@ const ELEMENT_DATA: productsData[] = [
   },
 ];
 
-const colors: Record<string, EventColor> = {
-  red: {
-    primary: '#ad2121',
-    secondary: '#FAE3E3',
-  },
-  blue: {
-    primary: '#1e90ff',
-    secondary: '#D1E8FF',
-  },
-  yellow: {
-    primary: '#e3bc08',
-    secondary: '#FDF1BA',
-  },
-};
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class AppDashboardComponent {
-  @ViewChild('chart') chart: ChartComponent = Object.create(null);
+export class AppDashboardComponent implements OnInit { 
 
   public salesOverviewChart!: Partial<salesOverviewChart> | any;
   public spendingsChart!: Partial<spendingsChart> | any;
@@ -188,177 +153,44 @@ export class AppDashboardComponent {
   ]; //updated months
 
   transactions?: Transaction[] | null;
-  selected: Date | null;  
-  dayList: CalendarEvent[] = [];
-  day: Date = new Date();    
-  dateClass : MatCalendarCellClassFunction<Date>;
-
-  //Teste//
-
-  @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
-
-  view: CalendarView = CalendarView.Month;
-
-  CalendarView = CalendarView;
-
-  viewDate: Date = new Date();
-
-  modalData: {
-    action: string;
-    event: CalendarEvent;
+  selected: Date | null;    
+  day: Date = new Date();   
+  dayList: Date[] = [];
+  
+  dateClass: MatCalendarCellClassFunction<Date> = (cellDate: Date, view: string) => {
+    if (view === 'month') {
+      const cellDay = cellDate.getDate();
+      const cellMonth = cellDate.getMonth();
+      const cellYear = cellDate.getFullYear();
+      
+      if (this.dayList.some((date) => {
+        const day = new Date(date).getDate();
+        const month = new Date(date).getMonth();
+        const year = new Date(date).getFullYear();
+  
+        return day === cellDay && month === cellMonth && year === cellYear;
+      })) {
+        return 'highlight-date';
+      }
+    }
+    return '';
   };
-
-  actions: CalendarEventAction[] = [
-    {
-      label: '<i class="fas fa-fw fa-pencil-alt"></i>',
-      a11yLabel: 'Edit',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.handleEvent('Edited', event);
-      },
-    },
-    {
-      label: '<i class="fas fa-fw fa-trash-alt"></i>',
-      a11yLabel: 'Delete',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.events = this.events.filter((iEvent) => iEvent !== event);
-        this.handleEvent('Deleted', event);
-      },
-    },
-  ];
-
-  refresh = new Subject<void>();
-
-  events: CalendarEvent[] = [
-    {
-      start: subDays(startOfDay(new Date()), 1),
-      end: addDays(new Date(), 1),
-      title: 'A 3 day event',
-      color: { ...colors['red'] },
-      actions: this.actions,
-      allDay: true,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true,
-      },
-      draggable: true,
-    },
-    {
-      start: startOfDay(new Date()),
-      title: 'An event with no end date',
-      color: { ...colors['yellow'] },
-      actions: this.actions,
-    },
-    {
-      start: subDays(endOfMonth(new Date()), 3),
-      end: addDays(endOfMonth(new Date()), 3),
-      title: 'A long event that spans 2 months',
-      color: { ...colors['blue'] },
-      allDay: true,
-    },
-    {
-      start: addHours(startOfDay(new Date()), 2),
-      end: addHours(new Date(), 2),
-      title: 'A draggable and resizable event',
-      color: { ...colors['yellow'] },
-      actions: this.actions,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true,
-      },
-      draggable: true,
-    },
-  ];
-
-  activeDayIsOpen: boolean = true;
   
-  
-  constructor(private transactionRepo: TransactionRepository,private modals: NgbModal) {
+  constructor(private transactionRepo: TransactionRepository) {}
+
+  async ngOnInit(): Promise<void> {
     this.transactionRepo.getTransactions().subscribe((t) => {
       this.transactions = t;      
       const series: number[] = [];
       const labels: (string | undefined)[] = [];
-      this.transactions.forEach((item) => {              
+      this.transactions.forEach((item) => {                                  
         if (item.status != 'Payment') return;
         series.push(item.amount);
-        labels.push(item.subcategory); 
-             
+        labels.push(item.subcategory);              
       });
     });
-  }
-
-  //test//
-
-  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
-    if (isSameMonth(date, this.viewDate)) {
-      if (
-        (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
-        events.length === 0
-      ) {
-        this.activeDayIsOpen = false;
-      } else {
-        this.activeDayIsOpen = true;
-      }
-      this.viewDate = date;
-    }
-  }
-
-  eventTimesChanged({
-    event,
-    newStart,
-    newEnd,
-  }: CalendarEventTimesChangedEvent): void {
-    this.events = this.events.map((iEvent) => {
-      if (iEvent === event) {
-        return {
-          ...event,
-          start: newStart,
-          end: newEnd,
-        };
-      }
-      return iEvent;
-    });
-    this.handleEvent('Dropped or resized', event);
-  }
-
-  handleEvent(action: string, event: CalendarEvent): void {
-    this.modalData = { event, action };
-    this.modals.open(this.modalContent, { size: 'lg' });
-  }
-
-  addEvent(): void {
-    this.events = [
-      ...this.events,
-      {
-        title: 'New event',
-        start: startOfDay(new Date()),
-        end: endOfDay(new Date()),
-        color: colors['red'],
-        draggable: true,
-        resizable: {
-          beforeStart: true,
-          afterEnd: true,
-        },
-      },
-    ];
-  }
-
-  deleteEvent(eventToDelete: CalendarEvent) {
-    this.events = this.events.filter((event) => event !== eventToDelete);
-  }
-
-  setView(view: CalendarView) {
-    this.view = view;
-  }
-
-  closeOpenMonthViewDay() {
-    this.activeDayIsOpen = false;
-  }
-
-
-  loadEvents(){
-    console.log(this.transactions)    
-  }
-
+  } 
+  
   getMessage() {
     return 'More saving than last month';
   }
@@ -372,29 +204,45 @@ export class AppDashboardComponent {
     return `$${total}`;
   }  
 
-  // getData(){
-  //   this.transactionRepo.getTransactions().subscribe((t) => {
-  //     this.transactions = t;     
-  //     this.transactions.forEach((item) => {        
-  //       const days = new Date(item.date);               
-  //       this.dayList.push(days)       
-  //     })})
-  // }
-
-  // dateClassTest(): MatCalendarCellClassFunction<Date> {      
-  //   return (cellDate: Date, view: string) => {  
-  //     this.getData()  
-  //     if (view === 'month' && moment.isMoment(cellDate)) {
-  //       const date = cellDate.toDate(); 
-  //       console.log(this.dayList[0])
-  //       console.log(this.dayList)      
-  //       if(this.dayList.includes(date)){
-  //         return 'highlight-date'
-  //       }       
-  //     }  
-  //     return '';
-  //   };      
-  // }
+  dateClassT(): MatCalendarCellClassFunction<Date> {
+    return (cellDate: Date, view: string) => {
+      if (view === 'month') {
+        const cellDay = cellDate.getDate();
+        const cellMonth = cellDate.getMonth();
+        const cellYear = cellDate.getFullYear();
+    
+        if (this.transactions) {
+          const isReceived = this.transactions.some((item) => {
+            const date = new Date(item.date);
+            const day = date.getDate();
+            const month = date.getMonth();
+            const year = date.getFullYear();
+    
+            return day === cellDay && month === cellMonth && year === cellYear && item.status === 'Received';
+          });
+  
+          const isPayment = this.transactions.some((item) => {
+            const date = new Date(item.date);
+            const day = date.getDate();
+            const month = date.getMonth();
+            const year = date.getFullYear();
+    
+            return day === cellDay && month === cellMonth && year === cellYear && item.status === 'Payment';
+          });
+  
+          if (isReceived) {
+            return 'highlight-date-received';
+          } else if (isPayment) {
+            return 'highlight-date-payment';
+          }
+        }
+      }
+      return '';
+    };
+  }
+  
+  
+  
 
 }
   
