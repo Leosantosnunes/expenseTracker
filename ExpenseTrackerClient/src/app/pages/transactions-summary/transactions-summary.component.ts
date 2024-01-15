@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Transaction } from 'src/app/models/transaction';
 import { RestDataSource } from 'src/app/services/rest.datasource';
 import { TransactionRepository } from 'src/app/repository/transaction.repository';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-transactions-summary',
@@ -10,13 +11,14 @@ import { TransactionRepository } from 'src/app/repository/transaction.repository
 })
 export class TransactionsSummaryComponent {
 
-  transactions ?: Transaction[] | null ;
+  transactions ?: Transaction[] | null;
+  private dateSubscription: Subscription;
 
   constructor(private transactionRepo: TransactionRepository) {
-    this.transactionRepo.getTransactions().subscribe(t=> {
-    this.transactions = t;
-    console.log(this.transactions);
-    })
+    this.dateSubscription = this.transactionRepo.selectedDate$.subscribe(
+      (date) => {
+      this.transactions = date || [];      
+      })
   }
 
   calculateSubtotal(transaction: Transaction): number {

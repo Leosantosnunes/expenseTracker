@@ -1,133 +1,14 @@
-<!-- <div class="row"> -->
-  <!-- --------------------------------------------------------------------------- -->
-  <!-- Sales Overview -->
-  <!-- --------------------------------------------------------------------------- -->
-  <!-- <div class="col-lg-8">
-    <mat-card class="cardWithShadow">
-      <mat-card-content class="p-24">
-        <div class="d-flex w-100">
-          <mat-card-title>Expense Tracker Overview</mat-card-title>
-          <div class="m-l-auto">
-            <mat-form-field class="theme-select" appearance="outline">
-              <mat-select value="mar">
-                <mat-option *ngFor="let month of months" [value]="month.value">
-                  {{ month.viewValue }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-        </div>
-        <apx-chart
-          [series]="salesOverviewChart.series"
-          [dataLabels]="salesOverviewChart.dataLabels"
-          [chart]="salesOverviewChart.chart"
-          [legend]="salesOverviewChart.legend"
-          [xaxis]="salesOverviewChart.xaxis"
-          [yaxis]="salesOverviewChart.yaxis"
-          [grid]="salesOverviewChart.grid"
-          [stroke]="salesOverviewChart.stroke"
-          [tooltip]="salesOverviewChart.tooltip"
-          [plotOptions]="salesOverviewChart.plotOptions"
-        ></apx-chart>
-      </mat-card-content>
-    </mat-card>
-  </div> -->
-  <!-- --------------------------------------------------------------------------- -->
-  <!-- end Sales overview -->
-  <!-- --------------------------------------------------------------------------- -->
-  <!-- <div class="col-lg-4">
-    <div class="row"> -->
-      <!-- --------------------------------------------------------------------------- -->
-      <!-- PIE CHART -->
-      <!-- --------------------------------------------------------------------------- -->
-      <!-- <div class="col-lg-12 col-sm-6">
-        <mat-card class="cardWithShadow">
-          <mat-card-content class="p-24">
-            <mat-card-title>Total Spendings this Month</mat-card-title>
-            <div class="row m-t-24">
-              <div class="col-7">
-                <h4 class="mat-headline-5">{{ getTotal() }}</h4>
-                <div class="d-flex align-items-center m-t-16">
-                  <button
-                    mat-mini-fab
-                    class="bg-light-success text-success shadow-none icon-27"
-                  >
-                    <i-tabler name="arrow-up-right" class="icon-20"></i-tabler>
-                  </button>
-                  <div *ngIf="true" class="mat-body-1 f-w-600 m-l-12">
-                    {{ getMessage() }}
-                  </div>
-                  <div class="mat-body-1 m-l-4"></div>
-                </div>
-              </div>
-              <div class="col-5 d-flex align-items-start">
-                <apx-chart
-                  [series]="spendingsChart.series"
-                  [dataLabels]="spendingsChart.dataLabels"
-                  [chart]="spendingsChart.chart"
-                  [legend]="spendingsChart.legend"
-                  [labels]="spendingsChart.labels"
-                  [colors]="spendingsChart.colors"
-                  [stroke]="spendingsChart.stroke"
-                  [tooltip]="spendingsChart.tooltip"
-                  [plotOptions]="spendingsChart.plotOptions"
-                  [responsive]="spendingsChart.responsive"
-                ></apx-chart>
-              </div>
-            </div>
-          </mat-card-content>
-        </mat-card>
-      </div> -->
-
-      <!-- --------------------------------------------------------------------------- -->
-      <!-- Monthly Earnings -->
-      <!-- --------------------------------------------------------------------------- -->
-      <!-- <div class="col-lg-12 col-sm-6">
-        <mat-card class="cardWithShadow">
-          <mat-card-header class="d-flex align-items-center p-x-24">
-            <mat-card-title>Monthly Earnings</mat-card-title>
-            <div class="m-l-auto">
-              <button mat-fab color="warn" class="shadow-none icon-48">
-                <i-tabler
-                  name="currency-dollar"
-                  class="text-white d-flex"
-                ></i-tabler>
-              </button>
-            </div>
-          </mat-card-header>
-          <mat-card-content class="m-b-32 p-x-24">
-            <h4 class="mat-headline-5">$6,820</h4>
-            <div class="d-flex align-items-center m-t-16">
-              <button
-                mat-mini-fab
-                class="bg-light-error text-error shadow-none icon-27"
-              >
-                <i-tabler name="arrow-down-right" class="icon-20"></i-tabler>
-              </button>
-              <div class="mat-body-1 f-w-600 m-l-12">-3%</div>
-              <div class="mat-body-1 m-l-4">last month</div>
-            </div>
-          </mat-card-content>
-          <apx-chart
-            [series]="monthlyChart.series"
-            [dataLabels]="monthlyChart.dataLabels"
-            [chart]="monthlyChart.chart"
-            [legend]="monthlyChart.legend"
-            [colors]="monthlyChart.colors"
-            [stroke]="monthlyChart.stroke"
-            [tooltip]="monthlyChart.tooltip"
-            [plotOptions]="monthlyChart.plotOptions"
-            [responsive]="monthlyChart.responsive"
-          ></apx-chart>
-        </mat-card>
-      </div> -->
-      <!-- Display Calendar -->
-      <div>
-        <mat-card class="demo-inline-calendar-card"  style="width: 70%;" *ngIf="transactions && transactions.length > 0">
-          <mat-calendar [(selected)]="selected" [dateClass]="dateClassT()"></mat-calendar>          
-        </mat-card>                 
-      </div>      
-    <!-- </div>
-  </div>
-</div> -->
+<!-- Display Calendar -->
+<mat-card class="cardWithShadow theme-card" *ngIf="transactionsList && transactionsList.length > 0">
+  <app-transactions-summary></app-transactions-summary>
+</mat-card>      
+<mat-card class="demo-inline-calendar-card" style="width: 30%;" *ngIf="transactions && transactions.length > 0">
+  
+  <mat-calendar [(selected)]="currentDate" [dateClass]="dateClassT()" (monthSelected)="onMonthSelected($event)" (selectedChange)="onDaySelected($event)"></mat-calendar>
+  
+</mat-card>
+  
+<div>
+  <app-transactions></app-transactions>
+</div> 
 

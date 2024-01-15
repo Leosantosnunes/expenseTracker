@@ -2,21 +2,23 @@ import { Component } from '@angular/core';
 import { Transaction } from 'src/app/models/transaction';
 import { RestDataSource } from 'src/app/services/rest.datasource';
 import { TransactionRepository } from 'src/app/repository/transaction.repository';
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-lists',
+  selector: 'app-transactions',
   templateUrl: './transactions.component.html',
   styleUrls: ['./transactions.component.css'],
 })
 export class AppTransactionsComponent{
 
- transactions ?: Transaction[] | null ;
+ transactions ?: Transaction[] | null ; 
+ private dateSubscription: Subscription;
 
- constructor(private dataSource: RestDataSource, private transactionRepo:TransactionRepository) {
-    this.transactionRepo.getTransactions().subscribe(t=> {
-    this.transactions = t;
-
-  })
+ constructor(private transactionRepo:TransactionRepository) {
+    this.dateSubscription = this.transactionRepo.selectedDate$.subscribe(
+    (date) => {
+    this.transactions = date;       
+    })
   } 
 
   onDeleteTransaction(transactionId: string) {

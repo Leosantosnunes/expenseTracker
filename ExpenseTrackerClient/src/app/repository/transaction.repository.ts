@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { RestDataSource } from '../services/rest.datasource';
 import { Transaction } from '../models/transaction';
-import { Observable, Observer } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { CategoryGroup } from '../models/category-groups';
 
 @Injectable()
 export class TransactionRepository {
+  private selectedDateSource = new BehaviorSubject<Transaction[] | null>(null);
+  selectedDate$ = this.selectedDateSource.asObservable();
 
     constructor(private dataSource:RestDataSource){}    
 
@@ -35,4 +37,10 @@ export class TransactionRepository {
   getCategoryGroups(): Observable<CategoryGroup[]> {
     return this.dataSource.get('transactions/categorygroups');    
   }
+
+  setSelectedDate(transactionList: Transaction[] | null): void {
+    this.selectedDateSource.next(transactionList);
+  }
+
+  
 }
