@@ -24,7 +24,7 @@ export class AppDashboardComponent implements OnInit{
 
   currentView: MatCalendarView;  
   
-  constructor(private transactionRepo: TransactionRepository) {console.log(this.currentDate)}
+  constructor(private transactionRepo: TransactionRepository) {}
 
   ngOnInit(){
     this.transactionRepo.getTransactions().subscribe((t) => {
@@ -34,8 +34,7 @@ export class AppDashboardComponent implements OnInit{
               
    }   
 
-   getTransactionsByMonth(date:Date){
-    console.log(date)
+   getTransactionsByMonth(date:Date){    
     if(date){    
     const selectedMonth = date.getMonth();
     const selectedYear = date.getFullYear();    
@@ -98,10 +97,8 @@ export class AppDashboardComponent implements OnInit{
       this.transactionRepo.setSelectedDate(this.transactionsList!)
     }}
 
-  onMonthInitial(){
-    console.log(this.selected);
-    this.getTransactionsByMonth(this.selected);
-    console.log(this.transactionsList)
+  onMonthInitial(){    
+    this.getTransactionsByMonth(this.selected);    
     if(this.transactionsList){
       this.transactionRepo.setSelectedDate(this.transactionsList!)
     }
@@ -110,23 +107,19 @@ export class AppDashboardComponent implements OnInit{
   onDaySelected(eventDay: Date | null) {    
     // Update the currentMonth whenever the displayed month changes
     const day = eventDay;
-    console.log(day)
     if(day){    
-      const selectedDay = day.getDay();
-      console.log(selectedDay)
-      const selectedMonth = day.getMonth();
-      console.log(selectedMonth)
+      const selectedDay = day.getDate();
+      const selectedMonth = day.getMonth();      
       const selectedYear = day.getFullYear(); 
-      console.log(selectedYear)   
+      
       this.transactionsList = this.transactions?.filter((transaction) => {
         const transactionDate = new Date(transaction.date);        
         return (
-          transactionDate.getDay() === selectedDay &&
+          transactionDate.getDate() === selectedDay &&
           transactionDate.getMonth() === selectedMonth &&
           transactionDate.getFullYear() === selectedYear
         );})    
-      }  
-    console.log(this.transactionsList)    
+      }        
     if(this.transactionsList){
       this.transactionRepo.setSelectedDate(this.transactionsList!)
     }}

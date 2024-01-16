@@ -6,12 +6,12 @@
 
 </head>
 <body>
-  <div class="container mt-5" *ngIf="transactions">
+  <div class="container mt-5">
     <h1>Transaction Summary</h1>
     <div class="row mt-4">
       <div class="col-md-6 income" >
         <h3>Income </h3>
-        <p>{{ sumIncome(transactions) | currency}}</p>
+        <p>{{ sumIncome(transactions)  | currency}}</p>
       </div>
       <div class="col-md-6 payments" >
         <h3>Payments </h3>
