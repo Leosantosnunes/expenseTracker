@@ -26,7 +26,9 @@ import * as _moment from 'moment';
 import { default as _rollupMoment, Moment } from 'moment';
 import { BudgetEntries } from 'src/app/models/budget-entries';
 import { Categories, Categories as Category } from 'src/app/models/categories';
+import { Transaction } from 'src/app/models/transaction';
 import { BudgetRepository } from 'src/app/repository/budget.repository';
+import { TransactionRepository } from 'src/app/repository/transaction.repository';
 
 const moment = _rollupMoment || _moment;
 
@@ -49,22 +51,25 @@ export class BudgetComponent {
   newCategoryInput!: ElementRef;
   categoriesDataSource: Array<any>;
   budgetEntries: any;
+  activities: Transaction[];
 
 
   constructor(
     private repository: BudgetRepository,
     private activeRoute: ActivatedRoute,
-    private route: Router
+    private route: Router,
+    private transactionRepo: TransactionRepository
   ) {
     this.activeRoute.params.subscribe((routeParams) => {
       const localDate = moment(routeParams['key'], 'YYYYMM');
       this.monthName = localDate.format('MMMM');
-      this.date = new FormControl(localDate);
+      this.date = new FormControl(localDate);          
       this.repository.getBudget(routeParams['key']).subscribe(() => {
         this.budgetEntries = this.repository.getBudgetEntries();
-        this.categoriesDataSource = this.repository.getCategoriesDataSource();
+        this.categoriesDataSource = this.repository.getCategoriesDataSource();        
       });
     });
+    this.transactionRepo.getTransactions().subscribe((t) =>{this.activities = t})
   }
 
   redirectTo(uri: string) {
@@ -74,9 +79,11 @@ export class BudgetComponent {
   }
 
   setMonthAndYear(
-    normalizedMonthAndYear: Moment,
+    monthAndYear: Moment | Date,
     datepicker: MatDatepicker<Moment>
   ) {
+
+    const normalizedMonthAndYear = moment(monthAndYear)
     const ctrlValue = this.date.value!;
     ctrlValue.month(normalizedMonthAndYear.month());
     ctrlValue.year(normalizedMonthAndYear.year());
@@ -101,9 +108,34 @@ export class BudgetComponent {
     return entry?.assigned || 0;
   }
 
+  getActivityAmount(element: Category): number {  
+    // Use the filter function to get the relevant activities
+    const filteredActivities = this.activities?.filter((t) => {
+      const transactionDate = new Date(t.date);
+      console.log(transactionDate.getDate());
+      // Check if the transaction date and category match the criteria
+      return (
+        transactionDate.getMonth() === this.date.value?.month() &&
+        transactionDate.getFullYear() === this.date.value?.year() &&
+        t.subcategory === element.name
+      );
+    });
+    
+    // Calculate the total amount from the filtered activities
+    const totalAmount = filteredActivities?.reduce(
+      (sum, activity) => sum + activity.amount,
+      0
+    );
+  
+    // Return the total amount or 0 if there are no filtered activities
+    return totalAmount || 0;
+  }
+  
+  
+
   getAmountAvailable(category: Category) {
     const target = category?.target?.amount || 0;
-    return target - this.getAssignedAmount(category);
+    return target - this.getActivityAmount(category) - this.getAssignedAmount(category);
   }
 
   isEditing(category: any) {
