@@ -53,4 +53,12 @@ export class BudgetSummaryComponent {
     });
     return availableAmount;
   }
+
+  getCalculateActivity():number{
+    let activityAmount = 0;
+    this.budgetRepository.categories?.forEach((element: Categories) => {
+      activityAmount += this.budgetComponent.getActivityAmount(element);
+    });
+    return activityAmount;
+  }
 }

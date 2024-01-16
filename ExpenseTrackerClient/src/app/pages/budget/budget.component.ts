@@ -66,7 +66,11 @@ export class BudgetComponent {
       this.date = new FormControl(localDate);          
       this.repository.getBudget(routeParams['key']).subscribe(() => {
         this.budgetEntries = this.repository.getBudgetEntries();
-        this.categoriesDataSource = this.repository.getCategoriesDataSource();        
+        this.categoriesDataSource = this.repository.getCategoriesDataSource();
+        this.categoriesDataSource = this.categoriesDataSource.filter((t) =>{
+          return (t.name != "Income");
+        })
+        console.log(this.categoriesDataSource)       
       });
     });
     this.transactionRepo.getTransactions().subscribe((t) =>{this.activities = t})
@@ -112,7 +116,6 @@ export class BudgetComponent {
     // Use the filter function to get the relevant activities
     const filteredActivities = this.activities?.filter((t) => {
       const transactionDate = new Date(t.date);
-      console.log(transactionDate.getDate());
       // Check if the transaction date and category match the criteria
       return (
         transactionDate.getMonth() === this.date.value?.month() &&
